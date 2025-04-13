@@ -1,3 +1,4 @@
+/* Define root variables for consistent theming across the app */
 :root {
   --primary-color: #8B5CF6;
   --secondary-color: #EC4899;
@@ -9,6 +10,7 @@
   --error-color: #F87171;
 }
 
+/* Base body styles */
 body {
   background-color: var(--background-color);
   color: var(--text-color);
@@ -22,6 +24,7 @@ body {
   background-image: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
 }
 
+/* Root container styling */
 #root {
   width: 100%;
   max-width: 1400px;
@@ -30,6 +33,7 @@ body {
   text-align: center;
 }
 
+/* Logo image styles and hover effects */
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -43,6 +47,7 @@ body {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
+/* Logo spin animation */
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
@@ -52,20 +57,24 @@ body {
   }
 }
 
+/* Apply animation only when motion is allowed */
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;
   }
 }
 
+/* Generic card styling */
 .card {
   padding: 2em;
 }
 
+/* Subtext styling */
 .read-the-docs {
   color: #888;
 }
 
+/* Quiz layout wrapper */
 .quiz-container {
   max-width: 1000px;
   width: 90%;
@@ -73,6 +82,7 @@ body {
   padding: 2rem;
 }
 
+/* Start screen card */
 .start-screen {
   background: var(--card-background);
   padding: 3rem 2rem;
@@ -94,6 +104,7 @@ body {
   font-weight: 700;
 }
 
+/* Informational box */
 .info {
   background-color: rgba(139, 92, 246, 0.1);
   padding: 2rem;
@@ -129,6 +140,7 @@ body {
   font-weight: bold;
 }
 
+/* Button styles */
 .start-button, .option-button, .restart-button {
   background-color: var(--secondary-color);
   color: white;
@@ -147,6 +159,7 @@ body {
   transform: translateY(-2px);
 }
 
+/* Quiz result container */
 .results {
   background: var(--card-background);
   padding: 3rem 2rem;
@@ -162,6 +175,7 @@ body {
   margin-bottom: 2rem;
 }
 
+/* Score display container */
 .score-card {
   background: rgba(139, 92, 246, 0.1);
   padding: 2rem;
@@ -172,6 +186,7 @@ body {
   gap: 1.5rem;
 }
 
+/* Individual score card items */
 .score-item {
   padding: 1.5rem;
   border-radius: 12px;
@@ -194,6 +209,7 @@ body {
   font-weight: 700;
 }
 
+/* Color coding for score types */
 .score-item.correct span:last-child {
   color: var(--success-color);
 }
@@ -207,6 +223,7 @@ body {
   opacity: 0.5;
 }
 
+/* Review answers section */
 .answers-review {
   margin-top: 3rem;
   width: 100%;
@@ -250,6 +267,7 @@ body {
   color: var(--text-color);
 }
 
+/* Answer text details */
 .answer-details {
   display: flex;
   flex-direction: column;
@@ -266,6 +284,7 @@ body {
   margin-left: 0.5rem;
 }
 
+/* Timeout and correct answer styles */
 .timeout {
   color: var(--error-color) !important;
   font-weight: 600;
@@ -282,6 +301,7 @@ body {
   font-weight: 700;
 }
 
+/* Restart button style */
 .restart-button {
   background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
   color: white;
@@ -297,198 +317,4 @@ body {
 
 .restart-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 8px -1px rgba(0, 0, 0, 0.15);
-}
-
-.app {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem 1rem;
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  position: relative;
-}
-
-.question-container {
-  background: var(--card-background);
-  padding: 4rem 2rem 2rem;
-  border-radius: 24px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  width: 100%;
-  max-width: 1200px;
-  min-height: 80vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  gap: 2rem;
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.question-container.transitioning {
-  opacity: 0;
-  transform: translateY(20px);
-}
-
-.question-image {
-  max-width: 800px;
-  width: 100%;
-  height: auto;
-  min-height: 400px;
-  object-fit: cover;
-  border-radius: 16px;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
-
-.question-image.loaded {
-  opacity: 1;
-}
-
-.question-text {
-  font-size: 1.5rem;
-  font-weight: 600;
-  text-align: center;
-  color: var(--text-color);
-  max-width: 900px;
-  width: 100%;
-  line-height: 1.5;
-}
-
-.options {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-  width: 100%;
-  max-width: 900px;
-  padding: 0 1rem;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-  pointer-events: none;
-}
-
-.options.visible {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-.option-button {
-  width: 100%;
-  padding: 1.25rem;
-  border: none;
-  border-radius: 16px;
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  color: white;
-  font-size: 1.2rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  text-align: center;
-  line-height: 1.4;
-}
-
-.option-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.2);
-}
-
-.timer {
-  position: absolute;
-  top: -25px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  color: white;
-  padding: 0.75rem 3rem;
-  border-radius: 999px;
-  font-weight: 600;
-  font-size: 1.2rem;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-  z-index: 100;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  letter-spacing: 0.5px;
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (max-width: 1200px) {
-  .question-container {
-    padding: 2rem;
-    max-width: 95%;
-  }
-
-  .question-image {
-    max-width: 100%;
-    min-height: 300px;
-  }
-
-  .options {
-    grid-template-columns: 1fr;
-    max-width: 600px;
-  }
-
-  .question-text {
-    font-size: 1.3rem;
-  }
-
-  .option-button {
-    padding: 1rem;
-    font-size: 1.1rem;
-  }
-}
-
-@media (max-width: 768px) {
-  #root {
-    padding: 1rem;
-  }
-
-  .question-container {
-    padding: 1.5rem;
-  }
-
-  .question-image {
-    min-height: 250px;
-  }
-
-  .question-text {
-    font-size: 1.2rem;
-  }
-
-  .option-button {
-    padding: 0.875rem;
-    font-size: 1rem;
-  }
-
-  .timer {
-    padding: 0.5rem 1.5rem;
-    font-size: 1rem;
-  }
-
-  .score-card {
-    grid-template-columns: 1fr;
-  }
-
-  .answer-item {
-    padding: 1rem;
-  }
-
-  .answer-item .question-text {
-    font-size: 1rem;
-  }
-}
+  box-shadow: 0 6px 8px -1px rgba(0, 0
