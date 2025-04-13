@@ -3,10 +3,11 @@ import QuizQuestion from './components/QuizQuestion'
 import './App.css'
 import './components/QuizQuestion.css'
 
-// Soruları buradan import edeceğiz
+// Importing the list of questions
 import questions from './questions'
 
 function App() {
+  // States for quiz flow and data
   const [isStarted, setIsStarted] = useState(false)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [score, setScore] = useState({
@@ -14,13 +15,14 @@ function App() {
     wrong: 0,
     empty: 0
   })
-  const [answers, setAnswers] = useState([])
-  const [isFinished, setIsFinished] = useState(false)
-  const [timeLeft, setTimeLeft] = useState(30)
-  const [showOptions, setShowOptions] = useState(false)
-  const [isTransitioning, setIsTransitioning] = useState(false)
-  const [imageLoaded, setImageLoaded] = useState(false)
+  const [answers, setAnswers] = useState([]) // User's answer history
+  const [isFinished, setIsFinished] = useState(false) // End of the quiz
+  const [timeLeft, setTimeLeft] = useState(30) // Countdown timer
+  const [showOptions, setShowOptions] = useState(false) // Whether to show options
+  const [isTransitioning, setIsTransitioning] = useState(false) // Used for UI transitions
+  const [imageLoaded, setImageLoaded] = useState(false) // Tracks image loading status
 
+  // Handles timer and question transition effects
   useEffect(() => {
     let timer
     let transitionTimer
@@ -32,6 +34,7 @@ function App() {
       setImageLoaded(false)
       setTimeLeft(30)
 
+      // Delay before showing options
       transitionTimer = setTimeout(() => {
         setIsTransitioning(false)
         optionsTimer = setTimeout(() => {
@@ -39,6 +42,7 @@ function App() {
         }, 4000)
       }, 500)
 
+      // Countdown timer
       timer = setInterval(() => {
         setTimeLeft((prevTime) => {
           if (prevTime <= 1) {
@@ -51,6 +55,7 @@ function App() {
       }, 1000)
     }
 
+    // Cleanup timers
     return () => {
       clearInterval(timer)
       clearTimeout(transitionTimer)
@@ -58,6 +63,7 @@ function App() {
     }
   }, [currentQuestionIndex, isFinished])
 
+  // Handles what happens when time is up
   const handleTimeUp = () => {
     if (!isFinished) {
       const currentQuestion = questions[currentQuestionIndex]
@@ -78,6 +84,7 @@ function App() {
     }
   }
 
+  // Handles user selecting an option
   const handleOptionClick = (option) => {
     const currentQuestion = questions[currentQuestionIndex]
     const isCorrect = option === currentQuestion.correctAnswer
@@ -99,6 +106,7 @@ function App() {
     goToNextQuestion()
   }
 
+  // Handles transition to the next question
   const goToNextQuestion = () => {
     setShowOptions(false)
     setIsTransitioning(true)
@@ -113,19 +121,23 @@ function App() {
     }, 300)
   }
 
+  // Starts the quiz
   const startQuiz = () => {
     setIsStarted(true)
   }
 
+  // Handles successful image load
   const handleImageLoad = () => {
     setImageLoaded(true)
   }
 
+  // Fallback image on error
   const handleImageError = (e) => {
     console.error('Image failed to load:', e)
-    e.target.src = 'fallback-image.jpg' // Varsayılan bir görsel ekleyebilirsiniz
+    e.target.src = 'fallback-image.jpg'
   }
 
+  // Start screen before quiz begins
   if (!isStarted) {
     return (
       <div className="app">
@@ -150,6 +162,7 @@ function App() {
     )
   }
 
+  // Result screen after quiz is finished
   if (isFinished) {
     return (
       <div className="app">
@@ -199,6 +212,7 @@ function App() {
     )
   }
 
+  // Main quiz screen
   const currentQuestion = questions[currentQuestionIndex]
 
   return (
