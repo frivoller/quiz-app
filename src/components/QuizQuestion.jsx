@@ -1,25 +1,28 @@
 import { useState, useEffect } from 'react'
 import './QuizQuestion.css'
 
-function QuizQuestion({ currentQuestion, onAnswer }) {
+// Evaluation Form 2: Component that handles individual quiz questions and their lifecycle
+function QuizQuestion({ question, onAnswer }) {
   const [timeLeft, setTimeLeft] = useState(30)
   const [showOptions, setShowOptions] = useState(false)
   const [selectedOption, setSelectedOption] = useState(null)
   const [imageLoaded, setImageLoaded] = useState(false)
 
-  // Zamanlayıcı ve seçeneklerin görünürlüğünü yönetme
+  // Timer and options visibility management
   useEffect(() => {
+    if (!question) return
+
     setTimeLeft(30)
     setShowOptions(false)
     setSelectedOption(null)
     setImageLoaded(false)
 
-    // Seçenekleri 3 saniye sonra göster
+    // Show options after 3 seconds
     const optionsTimer = setTimeout(() => {
       setShowOptions(true)
     }, 3000)
 
-    // Zamanlayıcıyı başlat
+    // Start countdown timer
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
@@ -35,41 +38,44 @@ function QuizQuestion({ currentQuestion, onAnswer }) {
       clearTimeout(optionsTimer)
       clearInterval(timer)
     }
-  }, [currentQuestion.question])
+  }, [question])
 
+  // Handle option selection
   const handleOptionClick = (option) => {
     if (selectedOption) return
     setSelectedOption(option)
     onAnswer(option, false)
   }
 
+  if (!question) return null
+
   return (
     <div className="question-container">
       <div className="question-header">
         <div className="question-counter">
-          Soru {currentQuestion.index + 1}/{currentQuestion.total}
+          Question {question.index + 1}/{question.total}
         </div>
         <div className="timer">
-          Kalan Süre: {timeLeft} saniye
+          Time Left: {timeLeft} seconds
         </div>
       </div>
 
       <div className="question-content">
-        {currentQuestion.media && (
+        {question.media && (
           <img
-            className="question-image"
-            src={currentQuestion.media}
-            alt="Soru görseli"
+            className={`question-image ${imageLoaded ? 'loaded' : ''}`}
+            src={question.media}
+            alt="Question image"
             onLoad={() => setImageLoaded(true)}
           />
         )}
         <div className="question-text">
-          {currentQuestion.question}
+          {question.question}
         </div>
       </div>
 
       <div className={`options ${showOptions ? 'visible' : ''}`}>
-        {currentQuestion.options.map((option, index) => (
+        {question.options.map((option, index) => (
           <button
             key={index}
             className={`option-button ${

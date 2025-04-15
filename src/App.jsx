@@ -4,12 +4,12 @@ import './components/QuizQuestion.css'
 import questions from './questions'
 import QuizQuestion from './components/QuizQuestion'
 
-// Değerlendirme Formu 1: React-Vite kullanımı ve proje yapısı
+// Evaluation Form 1: React-Vite usage and project structure
 function App() {
-  // Ana state yönetimi
+  // Main state management
   const [isStarted, setIsStarted] = useState(false)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
-  const [score, setScore] = useState(0)
+  const [answers, setAnswers] = useState([])
   const [showResults, setShowResults] = useState(false)
   const [timeLeft, setTimeLeft] = useState(30)
   const [showOptions, setShowOptions] = useState(false)
@@ -17,11 +17,11 @@ function App() {
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
 
-  // Quiz'i başlat
+  // Start the quiz
   const startQuiz = () => {
     setIsStarted(true)
     setCurrentQuestionIndex(0)
-    setScore(0)
+    setAnswers([])
     setShowResults(false)
     setTimeLeft(30)
     setShowOptions(false)
@@ -46,20 +46,22 @@ function App() {
     return () => clearInterval(timer);
   }, [isStarted, showResults, timeLeft]);
 
-  // Cevap işleme
+  // Handle answer submission
   const handleAnswer = (answer, isTimeout) => {
-    if (isTimeout) {
-      moveToNextQuestion()
-      return
+    const currentQuestion = questions[currentQuestionIndex]
+    const answerData = {
+      question: currentQuestion.question,
+      userAnswer: answer,
+      correctAnswer: currentQuestion.correctAnswer,
+      isCorrect: answer === currentQuestion.correctAnswer,
+      isTimeout: isTimeout
     }
-
-    if (answer === questions[currentQuestionIndex].correctAnswer) {
-      setScore(prev => prev + 1)
-    }
-
+    
+    setAnswers(prev => [...prev, answerData])
     moveToNextQuestion()
   }
 
+  // Move to next question or show results
   const moveToNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1)
@@ -76,81 +78,122 @@ function App() {
     }
   }
 
-  // Başlangıç ekranı
+  // Calculate statistics
+  const calculateStats = () => {
+    return answers.reduce((stats, answer) => {
+      if (answer.isTimeout) {
+        stats.unanswered++
+      } else if (answer.isCorrect) {
+        stats.correct++
+      } else {
+        stats.wrong++
+      }
+      return stats
+    }, { correct: 0, wrong: 0, unanswered: 0 })
+  }
+
+  // Start screen
   if (!isStarted) {
     return (
       <div className="start-screen">
         <div className="start-content">
-          <h1>Bilgi Yarışması</h1>
-          <p className="subtitle">Eğlenceli sorularla bilgini test et!</p>
+          <h1>Knowledge Quiz</h1>
+          <p className="subtitle">Test your knowledge with fun questions!</p>
           
           <div className="info-card">
-            <h2>Test Hakkında</h2>
+            <h2>About the Quiz</h2>
             <div className="info-items">
               <div className="info-item">
                 <span className="info-icon">📝</span>
                 <div className="info-text">
-                  <h3>Soru Sayısı</h3>
-                  <p>10 soru</p>
+                  <h3>Number of Questions</h3>
+                  <p>10 questions</p>
                 </div>
               </div>
               <div className="info-item">
                 <span className="info-icon">⏱️</span>
                 <div className="info-text">
-                  <h3>Süre</h3>
-                  <p>Her soru için 30 saniye</p>
+                  <h3>Time</h3>
+                  <p>30 seconds per question</p>
                 </div>
               </div>
               <div className="info-item">
                 <span className="info-icon">👁️</span>
                 <div className="info-text">
-                  <h3>Şıklar</h3>
-                  <p>İlk 4 saniye gizli</p>
+                  <h3>Options</h3>
+                  <p>Hidden for first 3 seconds</p>
                 </div>
               </div>
               <div className="info-item">
                 <span className="info-icon">🔄</span>
                 <div className="info-text">
-                  <h3>İlerleme</h3>
-                  <p>Geri dönüş yok</p>
+                  <h3>Progress</h3>
+                  <p>No going back</p>
                 </div>
               </div>
             </div>
           </div>
           
           <button className="start-button" onClick={startQuiz}>
-            Teste Başla
+            Start Quiz
           </button>
         </div>
       </div>
     )
   }
 
-  // Sonuç ekranı
+  // Results screen
   if (showResults) {
+    const stats = calculateStats()
     return (
       <div className="results-screen">
-        <h2>Test Sonuçları</h2>
+        <h2>Quiz Results</h2>
         <div className="score-cards">
           <div className="score-card correct">
             <div className="score-icon">✓</div>
-            <h3>Doğru</h3>
-            <div className="score-value">{score}</div>
+            <h3>Correct</h3>
+            <div className="score-value">{stats.correct}</div>
           </div>
           <div className="score-card wrong">
             <div className="score-icon">✗</div>
-            <h3>Yanlış</h3>
-            <div className="score-value">{questions.length - score}</div>
+            <h3>Wrong</h3>
+            <div className="score-value">{stats.wrong}</div>
+          </div>
+          <div className="score-card empty">
+            <div className="score-icon">⏱</div>
+            <h3>Unanswered</h3>
+            <div className="score-value">{stats.unanswered}</div>
           </div>
         </div>
+
+        <div className="answers-review">
+          <h3>Detailed Review</h3>
+          {answers.map((answer, index) => (
+            <div key={index} className={`answer-item ${answer.isCorrect ? 'correct' : 'wrong'}`}>
+              <div className="question-number">Question {index + 1}</div>
+              <div className="question-text">{answer.question}</div>
+              <div className="answer-details">
+                {answer.isTimeout ? (
+                  <p className="timeout">Time ran out</p>
+                ) : (
+                  <>
+                    <p>Your answer: <span>{answer.userAnswer || 'No answer'}</span></p>
+                    <p className="correct-answer">Correct answer: <span>{answer.correctAnswer}</span></p>
+                  </>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
         <button className="restart-button" onClick={startQuiz}>
-          Tekrar Dene
+          Try Again
         </button>
       </div>
     )
   }
 
-  // Quiz ekranı
+  // Quiz screen
   return (
     <div className="quiz-container">
       <QuizQuestion

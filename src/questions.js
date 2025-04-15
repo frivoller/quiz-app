@@ -1,4 +1,4 @@
-// Quiz soruları ve cevapları
+// Quiz questions and answers
 const questions = [
   {
     question: "Çin Seddini oluşturan taşlar birbirine ne ile tutturulmuştur?",
