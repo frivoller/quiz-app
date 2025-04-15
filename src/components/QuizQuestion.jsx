@@ -6,6 +6,7 @@ function QuizQuestion({ question, onAnswer, timeLimit = 30 }) {
   const [timeLeft, setTimeLeft] = useState(timeLimit)
   const [showOptions, setShowOptions] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const [optionsVisible, setOptionsVisible] = useState(false)
 
   // Evaluation Form 4: Timer and option display management
   useEffect(() => {
@@ -13,10 +14,15 @@ function QuizQuestion({ question, onAnswer, timeLimit = 30 }) {
     setTimeLeft(timeLimit)
     setShowOptions(false)
     setIsTransitioning(false)
+    setOptionsVisible(false)
 
     // Show options after 4 seconds delay
     const optionsTimer = setTimeout(() => {
       setShowOptions(true)
+      // Add a small delay for the CSS transition
+      setTimeout(() => {
+        setOptionsVisible(true)
+      }, 50)
     }, 4000)
 
     // Timer countdown
@@ -42,6 +48,7 @@ function QuizQuestion({ question, onAnswer, timeLimit = 30 }) {
     if (!isTransitioning) {
       setIsTransitioning(true)
       setShowOptions(false)
+      setOptionsVisible(false)
       // Short delay before sending answer
       setTimeout(() => {
         onAnswer(answer)
@@ -57,7 +64,7 @@ function QuizQuestion({ question, onAnswer, timeLimit = 30 }) {
       {question.image && (
         <img src={question.image} alt="Question visual" className="question-image" />
       )}
-      <div className={`options ${showOptions ? 'visible' : ''}`}>
+      <div className={`options ${showOptions ? 'visible' : ''} ${optionsVisible ? 'show-buttons' : ''}`}>
         {question.options.map((option, index) => (
           <button
             key={index}
