@@ -8,6 +8,8 @@ function QuizQuestion({ question, onAnswer }) {
   const [selectedOption, setSelectedOption] = useState(null)
   const [imageLoaded, setImageLoaded] = useState(false)
   const transitionTimeout = useRef(null)
+  const timerRef = useRef(null)
+  const optionsTimerRef = useRef(null)
 
   // Timer and options visibility management
   useEffect(() => {
@@ -19,20 +21,17 @@ function QuizQuestion({ question, onAnswer }) {
     setImageLoaded(false)
 
     // Şıkları 4 saniye sonra göster
-    const optionsTimer = setTimeout(() => {
+    optionsTimerRef.current = setTimeout(() => {
       setShowOptions(true)
     }, 4000)
 
     // Geri sayım
-    const timer = setInterval(() => {
+    timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
-          clearInterval(timer)
-          setShowOptions(false) // Şıklar süre bitince de gizli kalsın
-          // 0.7sn sonra yeni soruya geç
-          transitionTimeout.current = setTimeout(() => {
-            onAnswer(null, true)
-          }, 700)
+          clearInterval(timerRef.current)
+          setShowOptions(false)
+          onAnswer(null, true)
           return 0
         }
         return prev - 1
@@ -40,8 +39,8 @@ function QuizQuestion({ question, onAnswer }) {
     }, 1000)
 
     return () => {
-      clearTimeout(optionsTimer)
-      clearInterval(timer)
+      clearTimeout(optionsTimerRef.current)
+      clearInterval(timerRef.current)
       if (transitionTimeout.current) clearTimeout(transitionTimeout.current)
     }
   }, [question])
@@ -50,11 +49,13 @@ function QuizQuestion({ question, onAnswer }) {
   const handleOptionClick = (option) => {
     if (selectedOption) return
     setSelectedOption(option)
-    setShowOptions(false) // Şıklar seçildikten sonra tekrar görünmesin
-    // 0.7sn sonra yeni soruya geç
-    transitionTimeout.current = setTimeout(() => {
-      onAnswer(option, false)
-    }, 700)
+    setShowOptions(false)
+    // Tüm zamanlayıcıları temizle
+    clearTimeout(optionsTimerRef.current)
+    clearInterval(timerRef.current)
+    if (transitionTimeout.current) clearTimeout(transitionTimeout.current)
+    // Hemen yeni soruya geç
+    onAnswer(option, false)
   }
 
   if (!question) return null
