@@ -1,47 +1,61 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import './QuizQuestion.css'
 
-// Props for the component
-const QuizQuestion = ({ 
-  currentQuestion, 
-  options, 
-  onAnswer, 
-  timeLeft, 
-  isTransitioning,
-  imageLoaded,
-  setImageLoaded
-}) => {
-  // State management for timer, options visibility and transitions
+const QuizQuestion = ({ question, onAnswer }) => {
+  // State yönetimi
+  const [timeLeft, setTimeLeft] = useState(30)
   const [showOptions, setShowOptions] = useState(false)
   const [selectedAnswer, setSelectedAnswer] = useState(null)
+  const [imageLoaded, setImageLoaded] = useState(false)
 
-  // Reset states when question changes
+  // Timer yönetimi
   useEffect(() => {
-    setShowOptions(false)
-    setSelectedAnswer(null)
-    setImageLoaded(false)
-    
-    // Show options after 4 seconds
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(timer)
+          if (!selectedAnswer) {
+            onAnswer(null, true)
+          }
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [onAnswer, selectedAnswer])
+
+  // Şıkları gösterme zamanlayıcısı
+  useEffect(() => {
     const optionsTimer = setTimeout(() => {
       setShowOptions(true)
     }, 4000)
 
     return () => clearTimeout(optionsTimer)
-  }, [currentQuestion, setImageLoaded])
+  }, [question])
 
-  // Handle answer selection
-  const handleAnswerClick = (option) => {
-    if (!showOptions || selectedAnswer !== null) return
+  // Soru değiştiğinde state'leri sıfırla
+  useEffect(() => {
+    setTimeLeft(30)
+    setShowOptions(false)
+    setSelectedAnswer(null)
+    setImageLoaded(false)
+  }, [question])
+
+  // Cevap seçme
+  const handleAnswerClick = (answer) => {
+    if (!showOptions || selectedAnswer) return
     
-    setSelectedAnswer(option)
-    onAnswer(option)
+    setSelectedAnswer(answer)
+    onAnswer(answer, false)
   }
 
   return (
-    <div className={`question-container ${isTransitioning ? 'transitioning' : ''}`}>
+    <div className="question-container">
       <div className="question-header">
         <div className="question-counter">
-          Soru {currentQuestion.index + 1} / {currentQuestion.total}
+          Soru {question.index + 1} / {question.total}
         </div>
         <div className="timer">
           Kalan Süre: {timeLeft} saniye
@@ -49,10 +63,10 @@ const QuizQuestion = ({
       </div>
       
       <div className="question-content">
-        {currentQuestion.media && (
+        {question.media && (
           <div className="question-image-container">
             <img 
-              src={currentQuestion.media} 
+              src={question.media}
               alt="Soru görseli"
               className={`question-image ${imageLoaded ? 'loaded' : ''}`}
               onLoad={() => setImageLoaded(true)}
@@ -60,10 +74,10 @@ const QuizQuestion = ({
           </div>
         )}
         
-        <h2 className="question-text">{currentQuestion.question}</h2>
+        <h2 className="question-text">{question.question}</h2>
         
         <div className={`options ${showOptions ? 'visible' : ''}`}>
-          {options.map((option, index) => (
+          {question.options.map((option, index) => (
             <button
               key={index}
               onClick={() => handleAnswerClick(option)}
