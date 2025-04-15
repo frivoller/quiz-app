@@ -139,58 +139,84 @@ function App() {
 
   // Değerlendirme Formu 7: Kullanıcı arayüzü ve sonuç ekranı
   const renderQuestion = () => {
-    // Başlangıç ekranı
     if (!isStarted) {
       return (
         <div className="start-screen">
-          <h1>Quiz App</h1>
-          <p>Test your knowledge with our interactive quiz!</p>
-          <div className="info">
-            <h2>Test Hakkında Bilgiler</h2>
-            <ul>
-              <li>Test 10 sorudan oluşmaktadır</li>
-              <li>Her soru için 30 saniye süreniz var</li>
-              <li>İlk 4 saniye cevap şıkları gizli olacaktır</li>
-              <li>Geçmiş sorulara dönülemez</li>
-              <li>Test sonunda detaylı sonuç raporu alacaksınız</li>
-            </ul>
+          <div className="start-content">
+            <h1>Bilgi Yarışması</h1>
+            <p className="subtitle">Eğlenceli sorularla bilgini test et!</p>
+            
+            <div className="info-card">
+              <h2>Test Hakkında</h2>
+              <div className="info-items">
+                <div className="info-item">
+                  <span className="info-icon">📝</span>
+                  <div className="info-text">
+                    <h3>Soru Sayısı</h3>
+                    <p>10 soru</p>
+                  </div>
+                </div>
+                <div className="info-item">
+                  <span className="info-icon">⏱️</span>
+                  <div className="info-text">
+                    <h3>Süre</h3>
+                    <p>Her soru için 30 saniye</p>
+                  </div>
+                </div>
+                <div className="info-item">
+                  <span className="info-icon">👁️</span>
+                  <div className="info-text">
+                    <h3>Şıklar</h3>
+                    <p>İlk 4 saniye gizli</p>
+                  </div>
+                </div>
+                <div className="info-item">
+                  <span className="info-icon">📊</span>
+                  <div className="info-text">
+                    <h3>Sonuç</h3>
+                    <p>Detaylı skor raporu</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <button className="start-button" onClick={handleStartQuiz}>
+              Teste Başla
+            </button>
           </div>
-          <button onClick={handleStartQuiz}>Teste Başla</button>
         </div>
       )
     }
 
     // Sonuç ekranı
     if (showScore) {
+      const correctAnswers = answers.filter(a => a.isCorrect).length;
+      const wrongAnswers = answers.filter(a => !a.isCorrect && !a.isTimeout).length;
+      const emptyAnswers = answers.filter(a => a.isTimeout).length;
+
       return (
         <div className="results-screen">
           <h2>Test Sonuçları</h2>
-          <div className="score-summary">
-            <p>Toplam Puan: {score} / {questions.length}</p>
-            <p>Doğru Cevaplar: {score}</p>
-            <p>Yanlış Cevaplar: {questions.length - score}</p>
+          <div className="score-cards">
+            <div className="score-card correct">
+              <div className="score-icon">✓</div>
+              <h3>Doğru</h3>
+              <div className="score-value">{correctAnswers}</div>
+            </div>
+            <div className="score-card wrong">
+              <div className="score-icon">✗</div>
+              <h3>Yanlış</h3>
+              <div className="score-value">{wrongAnswers}</div>
+            </div>
+            <div className="score-card empty">
+              <div className="score-icon">○</div>
+              <h3>Boş</h3>
+              <div className="score-value">{emptyAnswers}</div>
+            </div>
           </div>
-          <div className="answers-list">
-            {answers.map((answer, index) => (
-              <div key={index} className={`answer-item ${answer.isCorrect ? 'correct' : 'wrong'}`}>
-                <h3>Soru {index + 1}</h3>
-                <p>{answer.question}</p>
-                {answer.isTimeout ? (
-                  <>
-                    <p className="timeout">Süre Doldu!</p>
-                    <p className="correct-answer">Doğru Cevap: <span>{answer.correctAnswer}</span></p>
-                  </>
-                ) : (
-                  <>
-                    <p>Sizin Cevabınız: {answer.selectedAnswer}</p>
-                    <p>Doğru Cevap: {answer.correctAnswer}</p>
-                  </>
-                )}
-                <p>Harcanan Süre: {answer.timeSpent} saniye</p>
-              </div>
-            ))}
-          </div>
-          <button onClick={handleStartQuiz}>Tekrar Dene</button>
+          <button className="restart-button" onClick={handleStartQuiz}>
+            Tekrar Dene
+          </button>
         </div>
       )
     }
@@ -220,19 +246,7 @@ function App() {
             {currentQuestion.options.map((option, index) => (
               <button
                 key={index}
-                className={`option-button ${
-                  !showOptions ? 'hidden' : ''
-                } ${
-                  selectedAnswer === option
-                    ? isCorrect
-                      ? 'correct'
-                      : 'wrong'
-                    : ''
-                } ${
-                  selectedAnswer && option === currentQuestion.correctAnswer
-                    ? 'correct'
-                    : ''
-                }`}
+                className={`option-button ${!showOptions ? 'hidden' : ''}`}
                 onClick={() => handleAnswerClick(option)}
                 disabled={selectedAnswer !== null}
               >
