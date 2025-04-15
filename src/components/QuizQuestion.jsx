@@ -6,6 +6,7 @@ function QuizQuestion({ question, onAnswer, timeLimit = 30 }) {
   const [timeLeft, setTimeLeft] = useState(timeLimit)
   const [showOptions, setShowOptions] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const [optionsTimer, setOptionsTimer] = useState(4)
 
   // Evaluation Form 4: Timer and option display management
   useEffect(() => {
@@ -13,13 +14,21 @@ function QuizQuestion({ question, onAnswer, timeLimit = 30 }) {
     setTimeLeft(timeLimit)
     setShowOptions(false)
     setIsTransitioning(false)
+    setOptionsTimer(4)
 
-    // Show options after 4 seconds delay
-    const optionsTimer = setTimeout(() => {
-      setShowOptions(true)
-    }, 4000)
+    // Options timer countdown
+    const optionsCountdown = setInterval(() => {
+      setOptionsTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(optionsCountdown)
+          setShowOptions(true)
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
 
-    // Timer countdown
+    // Main timer countdown
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
@@ -32,8 +41,8 @@ function QuizQuestion({ question, onAnswer, timeLimit = 30 }) {
 
     // Cleanup timers on component unmount or question change
     return () => {
-      clearTimeout(optionsTimer)
       clearInterval(timer)
+      clearInterval(optionsCountdown)
     }
   }, [question.question, timeLimit])
 
@@ -61,18 +70,20 @@ function QuizQuestion({ question, onAnswer, timeLimit = 30 }) {
           className="question-image"
         />
       )}
-      <div className={`options ${showOptions ? 'visible' : ''}`} style={{ display: showOptions ? 'grid' : 'none' }}>
-        {question.options.map((option, index) => (
-          <button
-            key={index}
-            onClick={() => handleAnswer(option)}
-            className="option-button"
-            disabled={!showOptions || isTransitioning}
-          >
-            {option}
-          </button>
-        ))}
-      </div>
+      {showOptions && (
+        <div className="options visible">
+          {question.options.map((option, index) => (
+            <button
+              key={index}
+              onClick={() => handleAnswer(option)}
+              className="option-button"
+              disabled={isTransitioning}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

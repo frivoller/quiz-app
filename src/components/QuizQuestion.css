@@ -12,6 +12,7 @@
   max-width: 800px;
   width: 100%;
   margin: 0 auto;
+  position: relative;
 }
 
 /* Timer display with gradient background */
@@ -34,17 +35,24 @@
 
 /* Options container with grid layout */
 .options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
   width: 100%;
   opacity: 0;
   transform: translateY(20px);
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
+  animation: fadeInUp 0.5s ease forwards;
 }
 
-.options.visible {
-  opacity: 1;
-  transform: translateY(0);
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Option button styling with hover effects */
@@ -60,6 +68,17 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: left;
   line-height: 1.5;
+  opacity: 0;
+  animation: fadeIn 0.3s ease forwards 0.2s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .option-button:hover:not(:disabled) {
