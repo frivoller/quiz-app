@@ -516,7 +516,7 @@ body {
 
 /* Evaluation form 8: CSS styling and layout */
 .app-container {
-  max-width: 800px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
   min-height: 100vh;
@@ -524,18 +524,20 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
 }
 
 /* Start screen styles */
 .start-screen {
   text-align: center;
   padding: 2rem;
-  background: white;
-  border-radius: 1rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  max-width: 600px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
   width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .start-screen h1 {
@@ -647,12 +649,14 @@ button:disabled {
 
 /* Results screen styles */
 .results-screen {
-  background: white;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
   padding: 2rem;
-  border-radius: 1rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 600px;
+  max-width: 1200px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .results-screen h2 {
@@ -665,37 +669,36 @@ button:disabled {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
-  margin-bottom: 2rem;
-  text-align: center;
+  margin: 2rem 0;
 }
 
 .score-summary p {
-  background: #f7fafc;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  color: #2d3748;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  border-radius: 1rem;
   font-weight: bold;
+  color: #2d3748;
 }
 
 .answers-list {
   display: grid;
-  gap: 1rem;
-  margin-bottom: 2rem;
+  gap: 1.5rem;
+  margin: 2rem 0;
 }
 
 .answer-item {
-  background: #f7fafc;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  border-left: 4px solid #e2e8f0;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  border-left: 4px solid;
 }
 
 .answer-item.correct {
-  border-left-color: #48bb78;
+  border-color: #48bb78;
 }
 
 .answer-item.wrong {
-  border-left-color: #f56565;
+  border-color: #f56565;
 }
 
 .answer-item h3 {
@@ -719,21 +722,32 @@ button:disabled {
 }
 
 /* Responsive design */
-@media (max-width: 640px) {
+@media (max-width: 1400px) {
   .app-container {
     padding: 1rem;
   }
 
   .question-container,
   .results-screen {
-    padding: 1.5rem;
+    max-width: 95%;
   }
 
   .score-summary {
     grid-template-columns: 1fr;
   }
+}
 
+@media (max-width: 768px) {
   .question-text {
     font-size: 1.2rem;
+  }
+
+  .option-button {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+
+  .info {
+    padding: 1.5rem;
   }
 }

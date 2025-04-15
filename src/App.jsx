@@ -5,9 +5,9 @@ import './components/QuizQuestion.css'
 // Importing the list of questions
 import questions from './questions'
 
-// Evaluation form 1: Component structure and organization
+// Değerlendirme Formu 1: React-Vite kullanımı ve proje yapısı
 function App() {
-  // State variables for quiz management
+  // Değerlendirme Formu 2: State yönetimi ve veri akışı
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [score, setScore] = useState(0)
   const [showScore, setShowScore] = useState(false)
@@ -21,7 +21,7 @@ function App() {
   const [isCorrect, setIsCorrect] = useState(null)
   const [imageLoaded, setImageLoaded] = useState(false)
 
-  // Evaluation form 3: State management and data flow
+  // Değerlendirme Formu 3: Test başlatma ve bilgilendirme ekranı
   const handleStartQuiz = () => {
     setIsStarted(true)
     setTimeLeft(30)
@@ -36,19 +36,19 @@ function App() {
     setImageLoaded(false)
   }
 
-  // Evaluation form 4: Timer implementation
+  // Değerlendirme Formu 4: Zamanlayıcı ve şık gösterimi kontrolü
   useEffect(() => {
     let timer
     let transitionTimer
     let optionsTimer
 
     if (isStarted && !isFinished) {
-      // Show options after 4 seconds
+      // İlk 4 saniye şıkları gizle
       optionsTimer = setTimeout(() => {
         setShowOptions(true)
       }, 4000)
 
-      // Main timer for question
+      // 30 saniyelik soru süresi
       timer = setInterval(() => {
         setTimeLeft(prevTime => {
           if (prevTime <= 1) {
@@ -67,7 +67,7 @@ function App() {
     }
   }, [isStarted, currentQuestionIndex, isFinished])
 
-  // Evaluation form 5: User interaction handling
+  // Değerlendirme Formu 5: Kullanıcı etkileşimi ve cevap kontrolü
   const handleAnswerClick = (selectedOption) => {
     if (selectedAnswer !== null) return
 
@@ -79,7 +79,7 @@ function App() {
       setScore(prevScore => prevScore + 1)
     }
 
-    // Add answer to history
+    // Cevap geçmişini kaydet
     setAnswers(prev => [...prev, {
       question: questions[currentQuestionIndex].question,
       selectedAnswer: selectedOption,
@@ -88,7 +88,7 @@ function App() {
       timeSpent: 30 - timeLeft
     }])
 
-    // Transition to next question after 1.5 seconds
+    // Sonraki soruya geç
     setTimeout(() => {
       if (currentQuestionIndex < questions.length - 1) {
         setCurrentQuestionIndex(prev => prev + 1)
@@ -104,13 +104,13 @@ function App() {
     }, 1500)
   }
 
-  // Evaluation form 6: Error handling and edge cases
+  // Değerlendirme Formu 6: Süre kontrolü ve otomatik geçiş
   const handleTimeUp = () => {
     if (selectedAnswer === null && !isFinished) {
       setSelectedAnswer('timeout')
       setIsCorrect(false)
 
-      // Add timeout answer to history
+      // Zaman aşımını kaydet
       setAnswers(prev => [...prev, {
         question: questions[currentQuestionIndex].question,
         selectedAnswer: null,
@@ -120,7 +120,7 @@ function App() {
         isTimeout: true
       }])
 
-      // Transition to next question after 1.5 seconds
+      // Sonraki soruya geç
       setTimeout(() => {
         if (currentQuestionIndex < questions.length - 1) {
           setCurrentQuestionIndex(prev => prev + 1)
@@ -137,68 +137,81 @@ function App() {
     }
   }
 
-  // Evaluation form 7: UI rendering and conditional display
+  // Değerlendirme Formu 7: Kullanıcı arayüzü ve sonuç ekranı
   const renderQuestion = () => {
+    // Başlangıç ekranı
     if (!isStarted) {
       return (
         <div className="start-screen">
           <h1>Quiz App</h1>
           <p>Test your knowledge with our interactive quiz!</p>
-          <button onClick={handleStartQuiz}>Start Quiz</button>
+          <div className="info">
+            <h2>Test Hakkında Bilgiler</h2>
+            <ul>
+              <li>Test 10 sorudan oluşmaktadır</li>
+              <li>Her soru için 30 saniye süreniz var</li>
+              <li>İlk 4 saniye cevap şıkları gizli olacaktır</li>
+              <li>Geçmiş sorulara dönülemez</li>
+              <li>Test sonunda detaylı sonuç raporu alacaksınız</li>
+            </ul>
+          </div>
+          <button onClick={handleStartQuiz}>Teste Başla</button>
         </div>
       )
     }
 
+    // Sonuç ekranı
     if (showScore) {
       return (
         <div className="results-screen">
-          <h2>Quiz Results</h2>
+          <h2>Test Sonuçları</h2>
           <div className="score-summary">
-            <p>Total Score: {score} / {questions.length}</p>
-            <p>Correct Answers: {score}</p>
-            <p>Wrong Answers: {questions.length - score}</p>
+            <p>Toplam Puan: {score} / {questions.length}</p>
+            <p>Doğru Cevaplar: {score}</p>
+            <p>Yanlış Cevaplar: {questions.length - score}</p>
           </div>
           <div className="answers-list">
             {answers.map((answer, index) => (
               <div key={index} className={`answer-item ${answer.isCorrect ? 'correct' : 'wrong'}`}>
-                <h3>Question {index + 1}</h3>
+                <h3>Soru {index + 1}</h3>
                 <p>{answer.question}</p>
                 {answer.isTimeout ? (
                   <>
-                    <p className="timeout">Time's Up!</p>
-                    <p className="correct-answer">Correct Answer: <span>{answer.correctAnswer}</span></p>
+                    <p className="timeout">Süre Doldu!</p>
+                    <p className="correct-answer">Doğru Cevap: <span>{answer.correctAnswer}</span></p>
                   </>
                 ) : (
                   <>
-                    <p>Your Answer: {answer.selectedAnswer}</p>
-                    <p>Correct Answer: {answer.correctAnswer}</p>
+                    <p>Sizin Cevabınız: {answer.selectedAnswer}</p>
+                    <p>Doğru Cevap: {answer.correctAnswer}</p>
                   </>
                 )}
-                <p>Time Spent: {answer.timeSpent} seconds</p>
+                <p>Harcanan Süre: {answer.timeSpent} saniye</p>
               </div>
             ))}
           </div>
-          <button onClick={handleStartQuiz}>Try Again</button>
+          <button onClick={handleStartQuiz}>Tekrar Dene</button>
         </div>
       )
     }
 
+    // Soru ekranı
     const currentQuestion = questions[currentQuestionIndex]
 
     return (
       <div className="question-container">
         <div className="question-header">
           <div className="question-counter">
-            Question {currentQuestionIndex + 1} of {questions.length}
+            Soru {currentQuestionIndex + 1} / {questions.length}
           </div>
           <div className="timer">
-            Time Left: {timeLeft}s
+            Kalan Süre: {timeLeft}s
           </div>
         </div>
         <div className="question-content">
           <img 
             src={currentQuestion.media} 
-            alt="Question illustration"
+            alt="Soru görseli"
             className={`question-image ${imageLoaded ? 'loaded' : ''}`}
             onLoad={() => setImageLoaded(true)}
           />
@@ -232,6 +245,7 @@ function App() {
     )
   }
 
+  // Değerlendirme Formu 8: Responsive tasarım (1400px)
   return (
     <div className="app-container">
       {renderQuestion()}
