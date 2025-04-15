@@ -73,22 +73,28 @@ function App() {
       timeSpent: 30 - timeLeft
     }]);
 
+    // Soru geçişi için bekleme süresi
     setTimeout(() => {
-      if (currentQuestionIndex < questions.length - 1) {
-        setCurrentQuestionIndex(prev => prev + 1);
-        setTimeLeft(30);
-        setShowOptions(false);
-        setSelectedAnswer(null);
-        setIsCorrect(null);
-        setImageLoaded(false);
-      } else {
-        setIsFinished(true);
-        setShowScore(true);
-      }
+      setIsTransitioning(true);
+      
+      setTimeout(() => {
+        if (currentQuestionIndex < questions.length - 1) {
+          setCurrentQuestionIndex(prev => prev + 1);
+          setTimeLeft(30);
+          setShowOptions(false);
+          setSelectedAnswer(null);
+          setIsCorrect(null);
+          setImageLoaded(false);
+          setIsTransitioning(false);
+        } else {
+          setIsFinished(true);
+          setShowScore(true);
+        }
+      }, 500);
     }, 1500);
   };
 
-  // Değerlendirme Formu 6: Süre kontrolü ve otomatik geçiş
+  // Süre kontrolü ve otomatik geçiş
   const handleTimeUp = () => {
     if (selectedAnswer === null && !isFinished) {
       setSelectedAnswer('timeout');
@@ -103,18 +109,24 @@ function App() {
         isTimeout: true
       }]);
 
+      // Süre bittiğinde soru geçişi
       setTimeout(() => {
-        if (currentQuestionIndex < questions.length - 1) {
-          setCurrentQuestionIndex(prev => prev + 1);
-          setTimeLeft(30);
-          setShowOptions(false);
-          setSelectedAnswer(null);
-          setIsCorrect(null);
-          setImageLoaded(false);
-        } else {
-          setIsFinished(true);
-          setShowScore(true);
-        }
+        setIsTransitioning(true);
+        
+        setTimeout(() => {
+          if (currentQuestionIndex < questions.length - 1) {
+            setCurrentQuestionIndex(prev => prev + 1);
+            setTimeLeft(30);
+            setShowOptions(false);
+            setSelectedAnswer(null);
+            setIsCorrect(null);
+            setImageLoaded(false);
+            setIsTransitioning(false);
+          } else {
+            setIsFinished(true);
+            setShowScore(true);
+          }
+        }, 500);
       }, 1500);
     }
   };
