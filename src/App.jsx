@@ -38,79 +38,87 @@ function App() {
 
   // Değerlendirme Formu 4: Zamanlayıcı ve şık gösterimi kontrolü
   useEffect(() => {
-    let timer
-    let transitionTimer
-    let optionsTimer
+    let timer;
+    let optionsTimer;
 
-    if (isStarted && !isFinished) {
-      // İlk 4 saniye şıkları gizle
+    const startTimers = () => {
+      // Reset timers
+      clearInterval(timer);
+      clearTimeout(optionsTimer);
+      
+      // Reset states
+      setTimeLeft(30);
+      setShowOptions(false);
+
+      // Start options timer (4 seconds)
       optionsTimer = setTimeout(() => {
-        setShowOptions(true)
-      }, 4000)
+        setShowOptions(true);
+      }, 4000);
 
-      // 30 saniyelik soru süresi
+      // Start main timer (30 seconds)
       timer = setInterval(() => {
-        setTimeLeft(prevTime => {
-          if (prevTime <= 1) {
-            handleTimeUp()
-            return 0
+        setTimeLeft(prev => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            handleTimeUp();
+            return 0;
           }
-          return prevTime - 1
-        })
-      }, 1000)
+          return prev - 1;
+        });
+      }, 1000);
+    };
+
+    if (isStarted && !isFinished && !selectedAnswer) {
+      startTimers();
     }
 
     return () => {
-      clearInterval(timer)
-      clearTimeout(transitionTimer)
-      clearTimeout(optionsTimer)
-    }
-  }, [isStarted, currentQuestionIndex, isFinished])
+      clearInterval(timer);
+      clearTimeout(optionsTimer);
+    };
+  }, [isStarted, currentQuestionIndex, isFinished, selectedAnswer]);
 
   // Değerlendirme Formu 5: Kullanıcı etkileşimi ve cevap kontrolü
   const handleAnswerClick = (selectedOption) => {
-    if (selectedAnswer !== null) return
+    if (selectedAnswer !== null) return;
 
-    setSelectedAnswer(selectedOption)
-    const isAnswerCorrect = selectedOption === questions[currentQuestionIndex].correctAnswer
-    setIsCorrect(isAnswerCorrect)
+    const isAnswerCorrect = selectedOption === questions[currentQuestionIndex].correctAnswer;
+    setSelectedAnswer(selectedOption);
+    setIsCorrect(isAnswerCorrect);
 
     if (isAnswerCorrect) {
-      setScore(prevScore => prevScore + 1)
+      setScore(prev => prev + 1);
     }
 
-    // Cevap geçmişini kaydet
     setAnswers(prev => [...prev, {
       question: questions[currentQuestionIndex].question,
       selectedAnswer: selectedOption,
       correctAnswer: questions[currentQuestionIndex].correctAnswer,
       isCorrect: isAnswerCorrect,
       timeSpent: 30 - timeLeft
-    }])
+    }]);
 
-    // Sonraki soruya geç
     setTimeout(() => {
       if (currentQuestionIndex < questions.length - 1) {
-        setCurrentQuestionIndex(prev => prev + 1)
-        setTimeLeft(30)
-        setShowOptions(false)
-        setSelectedAnswer(null)
-        setIsCorrect(null)
-        setImageLoaded(false)
+        setCurrentQuestionIndex(prev => prev + 1);
+        setTimeLeft(30);
+        setShowOptions(false);
+        setSelectedAnswer(null);
+        setIsCorrect(null);
+        setImageLoaded(false);
       } else {
-        setIsFinished(true)
-        setShowScore(true)
+        setIsFinished(true);
+        setShowScore(true);
       }
-    }, 1500)
-  }
+    }, 1500);
+  };
 
   // Değerlendirme Formu 6: Süre kontrolü ve otomatik geçiş
   const handleTimeUp = () => {
     if (selectedAnswer === null && !isFinished) {
-      setSelectedAnswer('timeout')
-      setIsCorrect(false)
+      setSelectedAnswer('timeout');
+      setIsCorrect(false);
 
-      // Zaman aşımını kaydet
       setAnswers(prev => [...prev, {
         question: questions[currentQuestionIndex].question,
         selectedAnswer: null,
@@ -118,24 +126,23 @@ function App() {
         isCorrect: false,
         timeSpent: 30,
         isTimeout: true
-      }])
+      }]);
 
-      // Sonraki soruya geç
       setTimeout(() => {
         if (currentQuestionIndex < questions.length - 1) {
-          setCurrentQuestionIndex(prev => prev + 1)
-          setTimeLeft(30)
-          setShowOptions(false)
-          setSelectedAnswer(null)
-          setIsCorrect(null)
-          setImageLoaded(false)
+          setCurrentQuestionIndex(prev => prev + 1);
+          setTimeLeft(30);
+          setShowOptions(false);
+          setSelectedAnswer(null);
+          setIsCorrect(null);
+          setImageLoaded(false);
         } else {
-          setIsFinished(true)
-          setShowScore(true)
+          setIsFinished(true);
+          setShowScore(true);
         }
-      }, 1500)
+      }, 1500);
     }
-  }
+  };
 
   // Değerlendirme Formu 7: Kullanıcı arayüzü ve sonuç ekranı
   const renderQuestion = () => {
@@ -185,7 +192,7 @@ function App() {
             </button>
           </div>
         </div>
-      )
+      );
     }
 
     // Sonuç ekranı
@@ -218,7 +225,7 @@ function App() {
             Tekrar Dene
           </button>
         </div>
-      )
+      );
     }
 
     // Soru ekranı
@@ -242,18 +249,20 @@ function App() {
             onLoad={() => setImageLoaded(true)}
           />
           <h2 className="question-text">{currentQuestion.question}</h2>
-          <div className="options-container">
-            {currentQuestion.options.map((option, index) => (
-              <button
-                key={index}
-                className={`option-button ${!showOptions ? 'hidden' : ''}`}
-                onClick={() => handleAnswerClick(option)}
-                disabled={selectedAnswer !== null}
-              >
-                {option}
-              </button>
-            ))}
-          </div>
+          {showOptions && (
+            <div className="options">
+              {currentQuestion.options.map((option, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleAnswerClick(option)}
+                  className="option-button"
+                  disabled={selectedAnswer !== null}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     )
