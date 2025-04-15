@@ -1,93 +1,86 @@
 import { useState, useEffect } from 'react'
 import './QuizQuestion.css'
 
-const QuizQuestion = ({ question, onAnswer }) => {
-  // State yönetimi
+function QuizQuestion({ currentQuestion, onAnswer }) {
   const [timeLeft, setTimeLeft] = useState(30)
   const [showOptions, setShowOptions] = useState(false)
-  const [selectedAnswer, setSelectedAnswer] = useState(null)
+  const [selectedOption, setSelectedOption] = useState(null)
   const [imageLoaded, setImageLoaded] = useState(false)
 
-  // Timer yönetimi
+  // Zamanlayıcı ve seçeneklerin görünürlüğünü yönetme
   useEffect(() => {
+    setTimeLeft(30)
+    setShowOptions(false)
+    setSelectedOption(null)
+    setImageLoaded(false)
+
+    // Seçenekleri 3 saniye sonra göster
+    const optionsTimer = setTimeout(() => {
+      setShowOptions(true)
+    }, 3000)
+
+    // Zamanlayıcıyı başlat
     const timer = setInterval(() => {
-      setTimeLeft(prev => {
+      setTimeLeft((prev) => {
         if (prev <= 1) {
           clearInterval(timer)
-          if (!selectedAnswer) {
-            onAnswer(null, true)
-          }
+          onAnswer(null, true)
           return 0
         }
         return prev - 1
       })
     }, 1000)
 
-    return () => clearInterval(timer)
-  }, [onAnswer, selectedAnswer])
+    return () => {
+      clearTimeout(optionsTimer)
+      clearInterval(timer)
+    }
+  }, [currentQuestion.question])
 
-  // Şıkları gösterme zamanlayıcısı
-  useEffect(() => {
-    const optionsTimer = setTimeout(() => {
-      setShowOptions(true)
-    }, 4000)
-
-    return () => clearTimeout(optionsTimer)
-  }, [question])
-
-  // Soru değiştiğinde state'leri sıfırla
-  useEffect(() => {
-    setTimeLeft(30)
-    setShowOptions(false)
-    setSelectedAnswer(null)
-    setImageLoaded(false)
-  }, [question])
-
-  // Cevap seçme
-  const handleAnswerClick = (answer) => {
-    if (!showOptions || selectedAnswer) return
-    
-    setSelectedAnswer(answer)
-    onAnswer(answer, false)
+  const handleOptionClick = (option) => {
+    if (selectedOption) return
+    setSelectedOption(option)
+    onAnswer(option, false)
   }
 
   return (
     <div className="question-container">
       <div className="question-header">
         <div className="question-counter">
-          Soru {question.index + 1} / {question.total}
+          Soru {currentQuestion.index + 1}/{currentQuestion.total}
         </div>
         <div className="timer">
           Kalan Süre: {timeLeft} saniye
         </div>
       </div>
-      
+
       <div className="question-content">
-        {question.media && (
-          <div className="question-image-container">
-            <img 
-              src={question.media}
-              alt="Soru görseli"
-              className={`question-image ${imageLoaded ? 'loaded' : ''}`}
-              onLoad={() => setImageLoaded(true)}
-            />
-          </div>
+        {currentQuestion.media && (
+          <img
+            className="question-image"
+            src={currentQuestion.media}
+            alt="Soru görseli"
+            onLoad={() => setImageLoaded(true)}
+          />
         )}
-        
-        <h2 className="question-text">{question.question}</h2>
-        
-        <div className={`options ${showOptions ? 'visible' : ''}`}>
-          {question.options.map((option, index) => (
-            <button
-              key={index}
-              onClick={() => handleAnswerClick(option)}
-              className={`option-button ${selectedAnswer === option ? 'selected' : ''}`}
-              disabled={selectedAnswer !== null || !showOptions}
-            >
-              {option}
-            </button>
-          ))}
+        <div className="question-text">
+          {currentQuestion.question}
         </div>
+      </div>
+
+      <div className={`options ${showOptions ? 'visible' : ''}`}>
+        {currentQuestion.options.map((option, index) => (
+          <button
+            key={index}
+            className={`option-button ${
+              selectedOption === option ? 'selected' : ''
+            }`}
+            onClick={() => handleOptionClick(option)}
+            disabled={!showOptions || selectedOption}
+          >
+            {option}
+          </button>
+        ))}
       </div>
     </div>
   )

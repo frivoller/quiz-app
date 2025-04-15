@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import './components/QuizQuestion.css'
 import questions from './questions'
@@ -9,11 +9,7 @@ function App() {
   // Ana state yönetimi
   const [isStarted, setIsStarted] = useState(false)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
-  const [score, setScore] = useState({
-    correct: 0,
-    wrong: 0,
-    empty: 0
-  })
+  const [score, setScore] = useState(0)
   const [showResults, setShowResults] = useState(false)
   const [timeLeft, setTimeLeft] = useState(30)
   const [showOptions, setShowOptions] = useState(false)
@@ -25,7 +21,7 @@ function App() {
   const startQuiz = () => {
     setIsStarted(true)
     setCurrentQuestionIndex(0)
-    setScore({ correct: 0, wrong: 0, empty: 0 })
+    setScore(0)
     setShowResults(false)
     setTimeLeft(30)
     setShowOptions(false)
@@ -52,26 +48,23 @@ function App() {
 
   // Cevap işleme
   const handleAnswer = (answer, isTimeout) => {
-    const currentQuestion = questions[currentQuestionIndex]
-    const newScore = { ...score }
-
     if (isTimeout) {
-      newScore.empty += 1
-    } else if (answer === currentQuestion.correctAnswer) {
-      newScore.correct += 1
-    } else {
-      newScore.wrong += 1
+      moveToNextQuestion()
+      return
     }
 
-    setScore(newScore)
+    if (answer === questions[currentQuestionIndex].correctAnswer) {
+      setScore(prev => prev + 1)
+    }
 
-    // Son soru kontrolü
-    if (currentQuestionIndex === questions.length - 1) {
-      setShowResults(true)
+    moveToNextQuestion()
+  }
+
+  const moveToNextQuestion = () => {
+    if (currentQuestionIndex < questions.length - 1) {
+      setCurrentQuestionIndex(prev => prev + 1)
     } else {
-      setTimeout(() => {
-        setCurrentQuestionIndex(prev => prev + 1)
-      }, 1500)
+      setShowResults(true)
     }
   }
 
@@ -142,17 +135,12 @@ function App() {
           <div className="score-card correct">
             <div className="score-icon">✓</div>
             <h3>Doğru</h3>
-            <div className="score-value">{score.correct}</div>
+            <div className="score-value">{score}</div>
           </div>
           <div className="score-card wrong">
             <div className="score-icon">✗</div>
             <h3>Yanlış</h3>
-            <div className="score-value">{score.wrong}</div>
-          </div>
-          <div className="score-card empty">
-            <div className="score-icon">○</div>
-            <h3>Boş</h3>
-            <div className="score-value">{score.empty}</div>
+            <div className="score-value">{questions.length - score}</div>
           </div>
         </div>
         <button className="restart-button" onClick={startQuiz}>
