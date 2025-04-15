@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react'
 import './App.css'
+import './components/QuizQuestion.css'
+
+// Importing the list of questions
+import questions from './questions'
 
 // Evaluation form 1: Component structure and organization
 function App() {
   // State variables for quiz management
-  const [questions, setQuestions] = useState([])
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [score, setScore] = useState(0)
   const [showScore, setShowScore] = useState(false)
@@ -16,27 +19,7 @@ function App() {
   const [selectedAnswer, setSelectedAnswer] = useState(null)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [isCorrect, setIsCorrect] = useState(null)
-
-  // Evaluation form 2: Data fetching and API integration
-  useEffect(() => {
-    fetchQuestions()
-  }, [])
-
-  // Fetch questions from API
-  const fetchQuestions = async () => {
-    try {
-      const response = await fetch('https://opentdb.com/api.php?amount=10&type=multiple')
-      const data = await response.json()
-      const formattedQuestions = data.results.map(question => ({
-        question: question.question,
-        options: [...question.incorrect_answers, question.correct_answer].sort(() => Math.random() - 0.5),
-        correctAnswer: question.correct_answer
-      }))
-      setQuestions(formattedQuestions)
-    } catch (error) {
-      console.error('Error fetching questions:', error)
-    }
-  }
+  const [imageLoaded, setImageLoaded] = useState(false)
 
   // Evaluation form 3: State management and data flow
   const handleStartQuiz = () => {
@@ -50,6 +33,7 @@ function App() {
     setShowScore(false)
     setIsFinished(false)
     setAnswers([])
+    setImageLoaded(false)
   }
 
   // Evaluation form 4: Timer implementation
@@ -112,6 +96,7 @@ function App() {
         setShowOptions(false)
         setSelectedAnswer(null)
         setIsCorrect(null)
+        setImageLoaded(false)
       } else {
         setIsFinished(true)
         setShowScore(true)
@@ -143,6 +128,7 @@ function App() {
           setShowOptions(false)
           setSelectedAnswer(null)
           setIsCorrect(null)
+          setImageLoaded(false)
         } else {
           setIsFinished(true)
           setShowScore(true)
@@ -209,30 +195,38 @@ function App() {
             Time Left: {timeLeft}s
           </div>
         </div>
-        <h2 className="question-text">{currentQuestion.question}</h2>
-        <div className="options-container">
-          {currentQuestion.options.map((option, index) => (
-            <button
-              key={index}
-              className={`option-button ${
-                !showOptions ? 'hidden' : ''
-              } ${
-                selectedAnswer === option
-                  ? isCorrect
+        <div className="question-content">
+          <img 
+            src={currentQuestion.media} 
+            alt="Question illustration"
+            className={`question-image ${imageLoaded ? 'loaded' : ''}`}
+            onLoad={() => setImageLoaded(true)}
+          />
+          <h2 className="question-text">{currentQuestion.question}</h2>
+          <div className="options-container">
+            {currentQuestion.options.map((option, index) => (
+              <button
+                key={index}
+                className={`option-button ${
+                  !showOptions ? 'hidden' : ''
+                } ${
+                  selectedAnswer === option
+                    ? isCorrect
+                      ? 'correct'
+                      : 'wrong'
+                    : ''
+                } ${
+                  selectedAnswer && option === currentQuestion.correctAnswer
                     ? 'correct'
-                    : 'wrong'
-                  : ''
-              } ${
-                selectedAnswer && option === currentQuestion.correctAnswer
-                  ? 'correct'
-                  : ''
-              }`}
-              onClick={() => handleAnswerClick(option)}
-              disabled={selectedAnswer !== null}
-            >
-              {option}
-            </button>
-          ))}
+                    : ''
+                }`}
+                onClick={() => handleAnswerClick(option)}
+                disabled={selectedAnswer !== null}
+              >
+                {option}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     )

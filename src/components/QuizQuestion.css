@@ -1,3 +1,4 @@
+/* Container for the entire question block */
 .question-container {
   max-width: 800px;
   margin: 0 auto;
@@ -7,12 +8,14 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Styling for the timer display */
 .timer {
   font-size: 1.2rem;
   color: #646cff;
   margin-bottom: 1rem;
 }
 
+/* Style for the question-related image */
 .question-image {
   max-width: 100%;
   height: auto;
@@ -20,22 +23,26 @@
   border-radius: 8px;
 }
 
+/* Grid layout for multiple choice options */
 .options {
   display: grid;
   gap: 1rem;
   margin-top: 2rem;
 }
 
+/* Hidden state for options (e.g., during loading or transition) */
 .options.hidden {
   opacity: 0;
   pointer-events: none;
 }
 
+/* Visible state for options with fade-in transition */
 .options.visible {
   opacity: 1;
   transition: opacity 0.3s ease-in;
 }
 
+/* Style for each individual option button */
 .option-button {
   padding: 1rem;
   background-color: #f5f5f5;
@@ -46,8 +53,9 @@
   transition: all 0.3s;
 }
 
+/* Hover effect for option buttons */
 .option-button:hover {
   background-color: #646cff;
   color: white;
   border-color: #646cff;
-} 
+}

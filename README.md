@@ -2,6 +2,10 @@
 
 Modern ve interaktif bir quiz uygulaması. React ve Vite kullanılarak geliştirilmiştir.
 
+## 🚀 Canlı Demo
+
+**[Quiz Uygulamasını Görüntüle](https://melodic-pasca-374f46.netlify.app/)**
+
 ## Özellikler
 
 - 10 soruluk interaktif quiz

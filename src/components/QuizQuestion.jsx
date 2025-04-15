@@ -31,7 +31,7 @@ function QuizQuestion({ question, onAnswer, timeLimit = 30 }) {
       clearTimeout(optionsTimer)
       clearInterval(timer)
     }
-  }, [question.question, timeLimit]) // onAnswer'ı dependency'den çıkardık
+  }, [question.question, timeLimit]) // onAnswer'ı dependency'den çıkardım
 
   const handleAnswer = (answer) => {
     if (!isTransitioning) {
