@@ -3,7 +3,7 @@ import './QuizQuestion.css'
 
 // Props for the component
 const QuizQuestion = ({ 
-  question, 
+  currentQuestion, 
   options, 
   onAnswer, 
   timeLeft, 
@@ -27,7 +27,7 @@ const QuizQuestion = ({
     }, 4000)
 
     return () => clearTimeout(optionsTimer)
-  }, [question, setImageLoaded])
+  }, [currentQuestion, setImageLoaded])
 
   // Handle answer selection
   const handleAnswerClick = (option) => {
@@ -41,7 +41,7 @@ const QuizQuestion = ({
     <div className={`question-container ${isTransitioning ? 'transitioning' : ''}`}>
       <div className="question-header">
         <div className="question-counter">
-          Soru {question.index + 1} / {question.total}
+          Soru {currentQuestion.index + 1} / {currentQuestion.total}
         </div>
         <div className="timer">
           Kalan Süre: {timeLeft} saniye
@@ -49,10 +49,10 @@ const QuizQuestion = ({
       </div>
       
       <div className="question-content">
-        {question.media && (
+        {currentQuestion.media && (
           <div className="question-image-container">
             <img 
-              src={question.media} 
+              src={currentQuestion.media} 
               alt="Soru görseli"
               className={`question-image ${imageLoaded ? 'loaded' : ''}`}
               onLoad={() => setImageLoaded(true)}
@@ -60,7 +60,7 @@ const QuizQuestion = ({
           </div>
         )}
         
-        <h2 className="question-text">{question.question}</h2>
+        <h2 className="question-text">{currentQuestion.question}</h2>
         
         <div className={`options ${showOptions ? 'visible' : ''}`}>
           {options.map((option, index) => (

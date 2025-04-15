@@ -206,7 +206,7 @@ function App() {
     const currentQuestion = questions[currentQuestionIndex];
     return (
       <QuizQuestion
-        question={currentQuestion}
+        currentQuestion={currentQuestion}
         options={currentQuestion.options}
         onAnswer={handleAnswerClick}
         timeLeft={timeLeft}
