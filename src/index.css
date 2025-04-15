@@ -1,86 +1,81 @@
-:root {
-  /* Base font settings */
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  /* Enable light/dark theme adaptation */
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  /* Improve font rendering */
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  /* Default link style */
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-
-a:hover {
-  /* Link hover effect */
-  color: #535bf2;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-  /* Reset default margin and apply flex layout to center content */
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  /* Header style */
-  font-size: 3.2em;
-  line-height: 1.1;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f8f9fa;
+  color: #2d3436;
+  line-height: 1.5;
 }
 
 button {
-  /* Base button styles */
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
 }
 
-button:hover {
-  /* Button hover effect */
-  border-color: #646cff;
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
-button:focus,
-button:focus-visible {
-  /* Focus styles for accessibility */
-  outline: 4px auto -webkit-focus-ring-color;
+/* Utility classes */
+.text-center {
+  text-align: center;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    /* Light mode color scheme */
-    color: #213547;
-    background-color: #ffffff;
+.mt-1 { margin-top: 0.25rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 1rem; }
+.mt-4 { margin-top: 1.5rem; }
+.mt-5 { margin-top: 2rem; }
+
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-3 { margin-bottom: 1rem; }
+.mb-4 { margin-bottom: 1.5rem; }
+.mb-5 { margin-bottom: 2rem; }
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .app-container {
+    padding: 1rem;
   }
 
-  a:hover {
-    /* Link hover effect in light mode */
-    color: #747bff;
+  .start-screen,
+  .results-screen {
+    padding: 2rem;
   }
 
-  button {
-    /* Button background in light mode */
-    background-color: #f9f9f9;
+  .start-screen h1 {
+    font-size: 2rem;
+  }
+
+  .results-screen h2 {
+    font-size: 1.8rem;
+  }
+
+  .score-display {
+    font-size: 2.5rem;
   }
 }

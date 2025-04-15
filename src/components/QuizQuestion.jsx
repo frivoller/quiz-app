@@ -1,80 +1,77 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
+import './QuizQuestion.css'
 
-// Evaluation Form 2: Component that handles individual quiz questions and their lifecycle
-function QuizQuestion({ question, onAnswer, timeLimit = 30 }) {
+// Props for the component
+const QuizQuestion = ({ 
+  question, 
+  options, 
+  onAnswer, 
+  timeLeft, 
+  isTransitioning,
+  imageLoaded,
+  setImageLoaded
+}) => {
   // State management for timer, options visibility and transitions
-  const [timeLeft, setTimeLeft] = useState(timeLimit)
   const [showOptions, setShowOptions] = useState(false)
-  const [isTransitioning, setIsTransitioning] = useState(false)
+  const [selectedAnswer, setSelectedAnswer] = useState(null)
 
-  // Evaluation Form 4: Timer and option display management
+  // Reset states when question changes
   useEffect(() => {
-    // Reset states when question changes
-    setTimeLeft(timeLimit)
     setShowOptions(false)
-    setIsTransitioning(false)
-
-    // Hide options for first 4 seconds
-    const showOptionsTimer = setTimeout(() => {
+    setSelectedAnswer(null)
+    
+    // Show options after 4 seconds
+    const optionsTimer = setTimeout(() => {
       setShowOptions(true)
     }, 4000)
 
-    // Main countdown timer
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          handleAnswer(null) // Send empty answer when time runs out
-          return 0
-        }
-        return prev - 1
-      })
-    }, 1000)
+    return () => clearTimeout(optionsTimer)
+  }, [question])
 
-    // Cleanup timers on component unmount or question change
-    return () => {
-      clearTimeout(showOptionsTimer)
-      clearInterval(timer)
-    }
-  }, [question.question, timeLimit])
-
-  // Evaluation Form 5: Handle user answer selection
-  const handleAnswer = (answer) => {
-    if (!isTransitioning) {
-      setIsTransitioning(true)
-      setShowOptions(false)
-      // Short delay before sending answer
-      setTimeout(() => {
-        onAnswer(answer)
-      }, 100)
-    }
+  // Handle answer selection
+  const handleAnswerClick = (option) => {
+    if (!showOptions || selectedAnswer !== null) return
+    
+    setSelectedAnswer(option)
+    onAnswer(option)
   }
 
-  // Evaluation Form 7: Question UI rendering with modern design
   return (
-    <div className="question-container">
-      <div className="timer">Kalan Süre: {timeLeft}s</div>
-      <h2>{question.question}</h2>
-      {question.image && (
-        <img 
-          src={question.image} 
-          alt="Question visual" 
-          className="question-image"
-        />
-      )}
-      {showOptions ? (
-        <div className="options">
-          {question.options.map((option, index) => (
+    <div className={`question-container ${isTransitioning ? 'transitioning' : ''}`}>
+      <div className="question-header">
+        <div className="question-counter">
+          Question {question.index + 1} / {question.total}
+        </div>
+        <div className="timer">
+          Time Left: {timeLeft} seconds
+        </div>
+      </div>
+      
+      <div className="question-content">
+        <div className="question-image-container">
+          <img 
+            src={question.media} 
+            alt="Question"
+            className={`question-image ${imageLoaded ? 'loaded' : ''}`}
+            onLoad={() => setImageLoaded(true)}
+          />
+        </div>
+        
+        <h2 className="question-text">{question.question}</h2>
+        
+        <div className={`options ${showOptions ? 'visible' : ''}`}>
+          {options.map((option, index) => (
             <button
               key={index}
-              onClick={() => handleAnswer(option)}
-              className="option-button"
-              disabled={isTransitioning}
+              onClick={() => handleAnswerClick(option)}
+              className={`option-button ${selectedAnswer === option ? 'selected' : ''}`}
+              disabled={selectedAnswer !== null}
             >
               {option}
             </button>
           ))}
         </div>
-      ) : null}
+      </div>
     </div>
   )
 }

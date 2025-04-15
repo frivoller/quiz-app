@@ -516,196 +516,98 @@ body {
 
 /* Evaluation form 8: CSS styling and layout */
 .app-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 2rem;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  padding: 2rem;
+  background: linear-gradient(135deg, #a8c0ff 0%, #3f2b96 100%);
 }
 
 /* Start screen styles */
 .start-screen {
-  text-align: center;
-  padding: 3rem;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 2rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  max-width: 800px;
   width: 100%;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.start-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rem;
+  max-width: 600px;
+  padding: 3rem;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
 .start-screen h1 {
-  font-size: 3rem;
-  color: white;
-  margin-bottom: 0.5rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2d3436;
+  margin-bottom: 1.5rem;
 }
 
-.subtitle {
+.start-screen p {
   font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: #636e72;
   margin-bottom: 2rem;
-}
-
-.info-card {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 1.5rem;
-  padding: 2rem;
-  width: 100%;
-}
-
-.info-card h2 {
-  color: white;
-  font-size: 1.8rem;
-  margin-bottom: 2rem;
-  text-align: center;
-}
-
-.info-items {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2rem;
-}
-
-.info-item {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 1rem;
-  transition: transform 0.3s ease;
-}
-
-.info-item:hover {
-  transform: translateY(-5px);
-}
-
-.info-icon {
-  font-size: 2rem;
-  background: rgba(255, 255, 255, 0.2);
-  width: 3rem;
-  height: 3rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 1rem;
-}
-
-.info-text {
-  text-align: left;
-}
-
-.info-text h3 {
-  color: white;
-  font-size: 1.1rem;
-  margin-bottom: 0.3rem;
-}
-
-.info-text p {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.9rem;
+  line-height: 1.6;
 }
 
 .start-button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  padding: 1rem 3rem;
-  border-radius: 2rem;
+  padding: 1rem 2.5rem;
   font-size: 1.2rem;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+  border: none;
+  border-radius: 2rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-top: 2rem;
-  font-weight: 600;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
 }
 
 .start-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
 }
 
-/* Sonuç ekranı stilleri */
-.score-cards {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-  margin: 3rem 0;
-}
-
-.score-card {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 2rem;
-  border-radius: 1.5rem;
+.results-screen {
+  width: 100%;
+  max-width: 800px;
+  padding: 3rem;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   text-align: center;
-  transition: transform 0.3s ease;
 }
 
-.score-card:hover {
-  transform: translateY(-5px);
-}
-
-.score-icon {
+.results-screen h2 {
   font-size: 2rem;
-  margin-bottom: 1rem;
-  color: white;
+  font-weight: 700;
+  color: #2d3436;
+  margin-bottom: 1.5rem;
 }
 
-.score-card h3 {
-  color: white;
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
-}
-
-.score-value {
+.score-display {
   font-size: 3rem;
-  font-weight: bold;
-  color: white;
-}
-
-.score-card.correct .score-icon {
-  color: #48bb78;
-}
-
-.score-card.wrong .score-icon {
-  color: #f56565;
-}
-
-.score-card.empty .score-icon {
-  color: #a0aec0;
+  font-weight: 700;
+  color: #6c5ce7;
+  margin-bottom: 2rem;
 }
 
 .restart-button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  padding: 1rem 3rem;
-  border-radius: 2rem;
+  padding: 1rem 2.5rem;
   font-size: 1.2rem;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+  border: none;
+  border-radius: 2rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-weight: 600;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
 }
 
 .restart-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
 }
 
 /* Responsive tasarım */

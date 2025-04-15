@@ -36,47 +36,22 @@ function App() {
     setImageLoaded(false)
   }
 
-  // Değerlendirme Formu 4: Zamanlayıcı ve şık gösterimi kontrolü
+  // Timer management
   useEffect(() => {
     let timer;
-    let optionsTimer;
-
-    const startTimers = () => {
-      // Reset timers
-      clearInterval(timer);
-      clearTimeout(optionsTimer);
-      
-      // Reset states
-      setTimeLeft(30);
-      setShowOptions(false);
-
-      // Start options timer (4 seconds)
-      optionsTimer = setTimeout(() => {
-        setShowOptions(true);
-      }, 4000);
-
-      // Start main timer (30 seconds)
+    if (isStarted && !isFinished && timeLeft > 0) {
       timer = setInterval(() => {
-        setTimeLeft(prev => {
+        setTimeLeft((prev) => {
           if (prev <= 1) {
-            clearInterval(timer);
             handleTimeUp();
             return 0;
           }
           return prev - 1;
         });
       }, 1000);
-    };
-
-    if (isStarted && !isFinished && !selectedAnswer) {
-      startTimers();
     }
-
-    return () => {
-      clearInterval(timer);
-      clearTimeout(optionsTimer);
-    };
-  }, [isStarted, currentQuestionIndex, isFinished, selectedAnswer]);
+    return () => clearInterval(timer);
+  }, [isStarted, isFinished, timeLeft]);
 
   // Değerlendirme Formu 5: Kullanıcı etkileşimi ve cevap kontrolü
   const handleAnswerClick = (selectedOption) => {
@@ -228,44 +203,18 @@ function App() {
       );
     }
 
-    // Soru ekranı
-    const currentQuestion = questions[currentQuestionIndex]
-
+    const currentQuestion = questions[currentQuestionIndex];
     return (
-      <div className="question-container">
-        <div className="question-header">
-          <div className="question-counter">
-            Soru {currentQuestionIndex + 1} / {questions.length}
-          </div>
-          <div className="timer">
-            Kalan Süre: {timeLeft}s
-          </div>
-        </div>
-        <div className="question-content">
-          <img 
-            src={currentQuestion.media} 
-            alt="Soru görseli"
-            className={`question-image ${imageLoaded ? 'loaded' : ''}`}
-            onLoad={() => setImageLoaded(true)}
-          />
-          <h2 className="question-text">{currentQuestion.question}</h2>
-          {showOptions && (
-            <div className="options">
-              {currentQuestion.options.map((option, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleAnswerClick(option)}
-                  className="option-button"
-                  disabled={selectedAnswer !== null}
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-    )
+      <QuizQuestion
+        question={currentQuestion}
+        options={currentQuestion.options}
+        onAnswer={handleAnswerClick}
+        timeLeft={timeLeft}
+        isTransitioning={isTransitioning}
+        imageLoaded={imageLoaded}
+        setImageLoaded={setImageLoaded}
+      />
+    );
   }
 
   // Değerlendirme Formu 8: Responsive tasarım (1400px)
