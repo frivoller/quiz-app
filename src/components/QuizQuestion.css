@@ -34,32 +34,17 @@
 
 /* Options container with grid layout */
 .options {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
   width: 100%;
   opacity: 0;
-  visibility: hidden;
-  transform: translateY(30px);
+  transform: translateY(20px);
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  pointer-events: none;
-  position: absolute;
-  left: -9999px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
 }
 
 .options.visible {
   opacity: 1;
-  visibility: visible;
   transform: translateY(0);
-  pointer-events: auto;
-  position: relative;
-  left: 0;
-}
-
-.options.show-buttons .option-button {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 0.2s;
 }
 
 /* Option button styling with hover effects */
@@ -72,11 +57,9 @@
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: left;
   line-height: 1.5;
-  opacity: 0;
-  transform: translateY(20px);
 }
 
 .option-button:hover:not(:disabled) {
@@ -89,7 +72,6 @@
 .option-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  transform: translateY(0);
 }
 
 /* Responsive design adjustments */
