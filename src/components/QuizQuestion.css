@@ -1,4 +1,4 @@
-/* Question container with modern design and animations */
+/* Question container with modern design */
 .question-container {
   display: flex;
   flex-direction: column;
@@ -12,10 +12,9 @@
   max-width: 800px;
   width: 100%;
   margin: 0 auto;
-  position: relative;
 }
 
-/* Timer display with gradient background */
+/* Timer display */
 .timer {
   background: linear-gradient(135deg, #6366f1, #8b5cf6);
   color: white;
@@ -25,7 +24,7 @@
   box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
 }
 
-/* Question image styling */
+/* Question image */
 .question-image {
   max-width: 100%;
   height: auto;
@@ -33,29 +32,16 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Options container with grid layout */
+/* Options container */
 .options {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1rem;
   width: 100%;
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeInUp 0.5s ease forwards;
+  animation: fadeIn 0.5s ease-out;
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Option button styling with hover effects */
+/* Option buttons */
 .option-button {
   padding: 1rem 1.5rem;
   border: none;
@@ -65,20 +51,9 @@
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
   text-align: left;
   line-height: 1.5;
-  opacity: 0;
-  animation: fadeIn 0.3s ease forwards 0.2s;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
 }
 
 .option-button:hover:not(:disabled) {
@@ -93,7 +68,19 @@
   cursor: not-allowed;
 }
 
-/* Responsive design adjustments */
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive design */
 @media (max-width: 768px) {
   .question-container {
     padding: 1.5rem;

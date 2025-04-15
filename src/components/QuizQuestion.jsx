@@ -6,29 +6,20 @@ function QuizQuestion({ question, onAnswer, timeLimit = 30 }) {
   const [timeLeft, setTimeLeft] = useState(timeLimit)
   const [showOptions, setShowOptions] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
-  const [optionsTimer, setOptionsTimer] = useState(4)
 
   // Evaluation Form 4: Timer and option display management
   useEffect(() => {
-    // Reset states for new question
+    // Reset states when question changes
     setTimeLeft(timeLimit)
     setShowOptions(false)
     setIsTransitioning(false)
-    setOptionsTimer(4)
 
-    // Options timer countdown
-    const optionsCountdown = setInterval(() => {
-      setOptionsTimer((prev) => {
-        if (prev <= 1) {
-          clearInterval(optionsCountdown)
-          setShowOptions(true)
-          return 0
-        }
-        return prev - 1
-      })
-    }, 1000)
+    // Hide options for first 4 seconds
+    const showOptionsTimer = setTimeout(() => {
+      setShowOptions(true)
+    }, 4000)
 
-    // Main timer countdown
+    // Main countdown timer
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
@@ -41,8 +32,8 @@ function QuizQuestion({ question, onAnswer, timeLimit = 30 }) {
 
     // Cleanup timers on component unmount or question change
     return () => {
+      clearTimeout(showOptionsTimer)
       clearInterval(timer)
-      clearInterval(optionsCountdown)
     }
   }, [question.question, timeLimit])
 
@@ -70,8 +61,8 @@ function QuizQuestion({ question, onAnswer, timeLimit = 30 }) {
           className="question-image"
         />
       )}
-      {showOptions && (
-        <div className="options visible">
+      {showOptions ? (
+        <div className="options">
           {question.options.map((option, index) => (
             <button
               key={index}
@@ -83,7 +74,7 @@ function QuizQuestion({ question, onAnswer, timeLimit = 30 }) {
             </button>
           ))}
         </div>
-      )}
+      ) : null}
     </div>
   )
 }
